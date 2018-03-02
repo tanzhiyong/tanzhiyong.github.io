@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="自从知道了LeanCloud这个平台后，的确省了后台开发，可以直接操作云数据库，LeanCloud的数据是基于MongoDB搭建的，所以也是挺方便的，足够可以开发个人APP了，如果要用起来那肯定是一个框架用着舒服的，以后还是会慢慢完善的，现在只是一个基本的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于LeanCloud平台的REST API封装">
+<meta property="og:url" content="http://yoursite.com/2018/03/02/基于LeanCloud平台的REST API封装/index.html">
+<meta property="og:site_name" content="BertramTan">
+<meta property="og:description" content="自从知道了LeanCloud这个平台后，的确省了后台开发，可以直接操作云数据库，LeanCloud的数据是基于MongoDB搭建的，所以也是挺方便的，足够可以开发个人APP了，如果要用起来那肯定是一个框架用着舒服的，以后还是会慢慢完善的，现在只是一个基本的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-02T08:20:17.757Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于LeanCloud平台的REST API封装">
+<meta name="twitter:description" content="自从知道了LeanCloud这个平台后，的确省了后台开发，可以直接操作云数据库，LeanCloud的数据是基于MongoDB搭建的，所以也是挺方便的，足够可以开发个人APP了，如果要用起来那肯定是一个框架用着舒服的，以后还是会慢慢完善的，现在只是一个基本的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/02/基于LeanCloud平台的REST API封装/"/>
+
+
+
+
+
+  <title>基于LeanCloud平台的REST API封装 | BertramTan</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BertramTan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Will be better</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/基于LeanCloud平台的REST API封装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BertramTan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BertramTan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于LeanCloud平台的REST API封装</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T16:17:34+08:00">
+                2018-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>﻿ 自从知道了LeanCloud这个平台后，的确省了后台开发，可以直接操作云数据库，LeanCloud的数据是基于MongoDB搭建的，所以也是挺方便的，足够可以开发个人APP了，如果要用起来那肯定是一个框架用着舒服的，以后还是会慢慢完善的，现在只是一个基本的。</p>
+<a id="more"></a>
+<p>好了，废话不多说，首先看<a href="https://leancloud.cn/docs/" target="_blank" rel="noopener">LeanCloud的文档</a>，看到有数据存储，并且LeanCloud是只是REST API的，那么我们就针对这两个封装就好了，首先是LeanCloud自己提供的SDK，因为LeanCloud SDK中已经封装好了很多对象，可以直接用，而且配置好就能够直接使用，很方便，但是有些时候不想引用SDK去减轻APP的质量，所以必须要针对REST API去封装了，这里使用的是<a href="https://github.com/square/retrofit" target="_blank" rel="noopener">Retrofit 2</a> + <a href="https://github.com/square/okhttp" target="_blank" rel="noopener">OkHttp 3</a> + <a href="https://github.com/ReactiveX/RxJava" target="_blank" rel="noopener">RxJava2</a> 去封装的，途中算是遇到很多坑了，都一一踩了，我也很无奈啊！</p>
+<p><strong>我是LeanCloud SDK+LeanCloud 提供的REST API混合使用的</strong></p>
+<p>现在开始吧：<br>首先是引入Retrofit2<br>很明显，我们需要把retrofit提供的rxjava2也导进去，不然是不能配合rxjava2的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//retrofit2.0</span><br><span class="line">    compile &apos;com.squareup.retrofit2:retrofit:2.3.0&apos;</span><br><span class="line">    compile &apos;com.squareup.retrofit2:converter-gson:2.3.0&apos;</span><br><span class="line">    compile &apos;com.squareup.retrofit2:adapter-rxjava2:2.3.0&apos;</span><br></pre></td></tr></table></figure></p>
+<p>这里说明一下，要注意rxjava 还是rxjava2，这两个是有直接区别的，一开始我就引入的rxjava，然后发现一只出异常，后来自己检查一下，发现是引入的时候引入的是rxjava而不是rxjava2，这个是细心的问题<br>OK，接下来是引入rxjava2的包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//Rx</span><br><span class="line">    compile &apos;io.reactivex.rxjava2:rxandroid:2.0.1&apos;</span><br><span class="line">    compile &apos;io.reactivex.rxjava2:rxjava:2.1.5&apos;</span><br></pre></td></tr></table></figure></p>
+<p>引入这个没什么坑的，然后要引入Okhttp3的包<br>这里我直接用动态引入包了，但是推荐不要这样做，因为会增加编译时间的，最好选择固定的版本<br>目前官网最新的版本是3.9.1，需要可以直接写上去<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//OkHttp包</span><br><span class="line">    compile &apos;com.squareup.okhttp3:okhttp:3.+&apos;</span><br><span class="line">    compile &apos;com.squareup.okio:okio:1.13.0&apos;</span><br><span class="line">    compile &apos;com.squareup.okhttp3:logging-interceptor:3.+&apos;</span><br></pre></td></tr></table></figure></p>
+<p>导入了之后，为了查看log更加美观，肯定少不了<a href="https://github.com/orhanobut/logger" target="_blank" rel="noopener">Logger</a>的，现在我们来引入Logger的包<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//Logger日志工具包</span><br><span class="line">    compile &apos;com.orhanobut:logger:2.1.1&apos;</span><br></pre></td></tr></table></figure></p>
+<p>基本的包都有了，现在开始配置Application类，然后绑定到Manefest文件中去<br>首先先定义一个基本的Common类，保存LeanCloud的Id和Key<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Common &#123;</span><br><span class="line">    public static final String APP_ID = &quot;LeanCloud的ID&quot;;</span><br><span class="line">    public static final String APP_KEY = &quot;LeanCloud的Key&quot;;</span><br><span class="line"></span><br><span class="line">    public static final String x_LC_Id = &quot;X-LC-Id:&quot; + APP_ID;</span><br><span class="line">    public static final String x_LC_Key = &quot;X-LC-Key:&quot; + APP_KEY;</span><br><span class="line">    public static final String x_Lc_Key_Master = &quot;X-LC-Key: LeanCloud中的master Key,master&quot;;//一般不要保存在本地</span><br><span class="line">    private static String curTime = String.valueOf(System.currentTimeMillis());</span><br><span class="line">    public static final String x_LC_Sign = &quot;X-LC-Sign:&quot; + MD5Utils.md5(curTime+APP_KEY)+&quot;,&quot;+curTime;</span><br><span class="line">    //定义全局请求baseUrl</span><br><span class="line">    public static String baseUrl = &quot;https://&quot;+APP_ID.substring(0,8)+&quot;.api.lncld.net/&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>填好了之后，就开始写Application类了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class App extends Application &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate() &#123;</span><br><span class="line">        super.onCreate();</span><br><span class="line">        //如果只使用REST API着不需要初始化AVOSloud</span><br><span class="line">        AVOSCloud.initialize(this,CommonConfig.APP_ID, CommonConfig.APP_KEY);</span><br><span class="line">        // 放在 SDK 初始化语句 AVOSCloud.initialize() 后面，只需要调用一次即可</span><br><span class="line">        AVOSCloud.setDebugLogEnabled((getApplicationInfo().flags &amp; ApplicationInfo.FLAG_DEBUGGABLE) != 0);</span><br><span class="line">        // 直播 SDK 初始化（不使用直播就不需要配置LCLiveKit）</span><br><span class="line">        LCLiveKit.getInstance().setProfileProvider(LCLKAppProvider.getInstance());</span><br><span class="line">  LCLiveKit.getInstance().init(getApplicationContext(),CommonConfig.APP_ID,CommonConfig.APP_KEY);</span><br><span class="line">        //初始化日志工具类</span><br><span class="line">        Logger.addLogAdapter(new AndroidLogAdapter());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来再Manefest文件中如何配置全局Application大家都懂，我就不填代码了，现在开始封装一个RetrofitHelper<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">public class RetrofitHelper &#123;</span><br><span class="line">    private static final int DEFAULT_TIMEOUT = 15;</span><br><span class="line">    private static OkHttpClient client = null;</span><br><span class="line">	//这里初始化OkHttpClient，当client为null才执行</span><br><span class="line">    static &#123;</span><br><span class="line">        if (client == null) &#123;</span><br><span class="line">            client = new OkHttpClient.Builder()</span><br><span class="line">                    .addInterceptor(chain -&gt; &#123;</span><br><span class="line">                        Request request = chain.request();</span><br><span class="line">                        RequestBody requestBody = request.body();</span><br><span class="line">                        if (requestBody != null) &#123;</span><br><span class="line">                            Charset charset = Charset.forName(&quot;UTF-8&quot;);</span><br><span class="line">                            MediaType contentType = requestBody.contentType();</span><br><span class="line">                            if (contentType != null) &#123;</span><br><span class="line">                                charset = contentType.charset(UTF8);</span><br><span class="line">                            &#125;</span><br><span class="line">                            String paramsStr = &quot;&quot;;</span><br><span class="line">                            Buffer buffer = new Buffer();</span><br><span class="line">                            requestBody.writeTo(buffer);</span><br><span class="line">                            paramsStr = buffer.readString(charset);</span><br><span class="line">                            LogUtils.e(String.format(&quot;%s request params%n%s&quot;, request.method(), paramsStr));</span><br><span class="line">                        &#125;</span><br><span class="line">                        long t1 = System.nanoTime();</span><br><span class="line">                        Response response = chain.proceed(request);</span><br><span class="line">                        long t2 = System.nanoTime();</span><br><span class="line">                        LogUtils.e(String.format(Locale.getDefault(), &quot;Received response for %s in %.1fms%n%s&quot;,</span><br><span class="line">                                response.request().url(), (t2 - t1) / 1e6d, response.headers()));</span><br><span class="line">                        MediaType mediaType = response.body().contentType();</span><br><span class="line">                        String content = response.body().string();</span><br><span class="line">                        LogUtils.json(content);</span><br><span class="line">                        return response.newBuilder()</span><br><span class="line">                                .body(okhttp3.ResponseBody.create(mediaType, content))</span><br><span class="line">                                .build();</span><br><span class="line">                    &#125;)</span><br><span class="line">                    .addNetworkInterceptor(chain -&gt; &#123;</span><br><span class="line">                        Request request = chain.request();</span><br><span class="line">                        Response response = chain.proceed(request);</span><br><span class="line">                        if (!response.isSuccessful()) &#123;</span><br><span class="line">                            MediaType mediaType = response.body().contentType();</span><br><span class="line">                            String content = response.body().string();</span><br><span class="line">                            return response.newBuilder().code(200).body(ResponseBody.create(mediaType, content)).build();</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                            return response;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;)</span><br><span class="line">                    .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)</span><br><span class="line">                    .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)</span><br><span class="line">                    .retryOnConnectionFailure(true)</span><br><span class="line">                    .build();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static &lt;T&gt; T getDefault(Class&lt;T&gt; clazz) &#123;</span><br><span class="line">        Retrofit retrofit = new Retrofit.Builder()</span><br><span class="line">                .baseUrl(Api.baseUrl)</span><br><span class="line">                .client(client)</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line">        return retrofit.create(clazz);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>代码贴了，这里说明几个关键的问题，一个很坑的问题，一旦请求头跟请求参数有一个不匹配服务器会直接返回400 Bad Request，例如注册用户的时候，如果用户已经存在的话，他还是返回400的，所以这里要做下处理，在Okhttp中，添加普通拦截器去打印Log，查看请求头，然后请求参数，然后还有响应头和返回来的数据。</p>
+<p>然后接下来处理返回400的问题，让我们能够接收400返回之后的数据，因为LeanCloud错误返回的固定格式{“code”:201,”error”:”error message”}所以我们需要修改response的响应码，让我们可以获取到返回的数据，所以就需要添加一下okhttp的网络拦截器，在里面判断一下response的code是不是400，如果是的话，就把response.body().string()和response.contentType()取出来保存，然后返回一个response.newBuilder().code(200).body(ResponseBody.create(mediaType,content)).build()，这样就可以把400返回的数据返回成功</p>
+<p>然后通过LeanCloud的文档我们可以知道每次请求一个数据，返回都会有objectId,updateAt,createAt，我们就可以根据这些去写一个通用的实体类BaseResp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">public abstract class BaseResp &#123;</span><br><span class="line">    private int code = -1;</span><br><span class="line">    private String error;</span><br><span class="line">    private String objectId;</span><br><span class="line">    private String createAt;</span><br><span class="line">    private String updateAt;</span><br><span class="line"></span><br><span class="line">    public String getObjectId() &#123;</span><br><span class="line">        return objectId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setObjectId(String objectId) &#123;</span><br><span class="line">        this.objectId = objectId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getCreateAt() &#123;</span><br><span class="line">        return createAt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setCreateAt(String createAt) &#123;</span><br><span class="line">        this.createAt = createAt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getUpdateAt() &#123;</span><br><span class="line">        return updateAt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setUpdateAt(String updateAt) &#123;</span><br><span class="line">        this.updateAt = updateAt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getCode() &#123;</span><br><span class="line">        return code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setCode(int code) &#123;</span><br><span class="line">        this.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getError() &#123;</span><br><span class="line">        return error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setError(String error) &#123;</span><br><span class="line">        this.error = error;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public abstract boolean isSuccess();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里我把code付了一个初值为-1，然后这个BaseResp是一个抽象类，里面有个抽象方法是isSuccess()，在子类中我们可以用这个判断是否请求成功，重写方法是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public boolean isSuccess() &#123;</span><br><span class="line">        return getCode() == -1 &amp;&amp; !TextUtils.isEmpty(getObjectId());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>一旦是请求失败的话，那么我们就需要处理显示getError()就好了</p>
+<p>然后就是和Service关联起来，我们都知道，使用Retrofit是需要retrofit.create(Service.class)，所以我写了个方法，初始化Retrofit并且利用泛型去关联Service Class，就是下面这个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static &lt;T&gt; T getDefault(Class&lt;T&gt; clazz) &#123;</span><br><span class="line">        Retrofit retrofit = new Retrofit.Builder()</span><br><span class="line">                .baseUrl(Api.baseUrl)</span><br><span class="line">                .client(client)</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line">        return retrofit.create(clazz);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>其中要注意RxJava2CallAdapterFactory，这个是要配合rxjava2使用的，rxjava则是RxJavaCallAdapterFactory</strong></p>
+<p>OK，封装好这些之后，我们要去处理Model类，然后还有rxJava中Observable的处理<br>我们先看看Model怎么写<br> 一开始定义一个接口，然后写上接口方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public interface IUserModel &#123;</span><br><span class="line"></span><br><span class="line">    Observable&lt;UserEntity&gt; login(REQ_login body);</span><br><span class="line"></span><br><span class="line">    Observable&lt;UserRegisterEntity&gt; register(REQ_register body);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class UserModel implements IUserModel &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Observable&lt;UserEntity&gt; login(REQ_login body) &#123;</span><br><span class="line">        return RetrofitHelper.getDefault(UserService.class).login(body);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Observable&lt;UserRegisterEntity&gt; register(REQ_register body) &#123;</span><br><span class="line">        return RetrofitHelper.getDefault(UserService.class).register(body);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们之前封装好的就直接这样用起来就好了，很简单，然后再Activity中需要的地方，直接new Model().login()就可以了，然后就是rxjava的处理方式了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * login</span><br><span class="line">     * @param context context</span><br><span class="line">     * @param username username</span><br><span class="line">     */</span><br><span class="line">    public void login(Context context,String username)&#123;</span><br><span class="line">        REQ_login body = new REQ_login();</span><br><span class="line">        body.setUsername(username);</span><br><span class="line">        body.setPassword(username);</span><br><span class="line">        new UserModel().login(body)</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(new HandlerObserve&lt;UserEntity&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void onNext(@NonNull UserEntity userEntity) &#123;</span><br><span class="line">                        if (userEntity.isSuccess())&#123;</span><br><span class="line">                            UserHelper.saveUserData(context,userEntity);</span><br><span class="line">                            if(UserHelper.isLogin(context))&#123;</span><br><span class="line">                                UIUtils.ToastMsg(context,&quot;登录成功&quot;);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;else&#123;</span><br><span class="line">                            UIUtils.ToastMsg(context,userEntity.getError());</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在rxJava处理这里，我重写了Observe，然后我们只需要处理onNext()就好了，很方便，如果需要和生命周期绑定，请移步去看<a href="https://github.com/trello/RxLifecycle" target="_blank" rel="noopener">RxLifecycle</a>，只需要添加一个compose方法，就可以了，这样处理更灵活，配合APP的生命周期使用会很舒服的</p>
+<p>其实封装Observe也是挺简单的，用抽象类去做处理：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public abstract class HandlerObserve&lt;T&gt; implements Observer&lt;T&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void onSubscribe(@NonNull Disposable d) &#123;</span><br><span class="line">        //do something in subscribe</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onError(@NonNull Throwable e) &#123;</span><br><span class="line">        //do something on error</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onComplete() &#123;</span><br><span class="line">        //do something on complete</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>一定要用泛型，一定要用泛型，一定要用泛型，不然onNext的参数是识别不了的</strong><br>好了，写了，挺久的，谢谢你们能够看完，是有点啰嗦了</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/02/刑侦科推理试题/" rel="next" title="刑侦科推理试题">
+                <i class="fa fa-chevron-left"></i> 刑侦科推理试题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">BertramTan</p>
+              <p class="site-description motion-element" itemprop="description">爱情和面包我都要</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BertramTan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

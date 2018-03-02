@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="爱情和面包我都要">
+<meta name="description" content="����Ͱ����Ҷ�Ҫ��">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你好,hexo">
 <meta property="og:url" content="http://yoursite.com/2018/03/02/你好-hexo/index.html">
 <meta property="og:site_name" content="BertramTan">
-<meta property="og:description" content="爱情和面包我都要">
+<meta property="og:description" content="����Ͱ����Ҷ�Ҫ��">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-03-02T07:42:17.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="你好,hexo">
-<meta name="twitter:description" content="爱情和面包我都要">
+<meta name="twitter:description" content="����Ͱ����Ҷ�Ҫ��">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>你好,hexo | BertramTan</title>
+  <title>你好,hexo | BertramTan testtses</title>
   
 
 
@@ -393,7 +393,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">BertramTan</p>
-              <p class="site-description motion-element" itemprop="description">爱情和面包我都要</p>
+              <p class="site-description motion-element" itemprop="description">����Ͱ����Ҷ�Ҫ��</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -403,7 +403,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
